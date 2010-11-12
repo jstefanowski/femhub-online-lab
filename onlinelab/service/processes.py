@@ -167,8 +167,13 @@ class ProcessManager(object):
         try:
             command = args.command
         except AttributeError:
-            from engine.python import boot
-            command = ["python", "-c", "%s" % boot]
+            
+	    if(1==2):
+		from engine.python import boot
+	        command = ["ruby", "-e", "%s" % boot]
+	    else:
+		from engine.python import boot2
+            	command = ["python", "-c", "%s" % boot2]
 
         env = self.build_env()
 
