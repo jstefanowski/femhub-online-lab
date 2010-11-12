@@ -629,7 +629,7 @@ class EngineProcess(object):
             args, okay, fail = self.evaluating = self.queue.pop()
 
             body = utilities.xml_encode(args.source, method)
-            headers = HTTPHeaders({'Content-Type': 'application/xml'})
+            headers = HTTPHeaders({'Content-Type': 'text/xml'})
 
             request = HTTPRequest(self.url, method='POST',
                 body=body, headers=headers, request_timeout=0)
