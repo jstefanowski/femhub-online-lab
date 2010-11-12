@@ -168,12 +168,16 @@ class ProcessManager(object):
             command = args.command
         except AttributeError:
             
-	    if(1==2):
-		from engine.python import boot
-	        command = ["ruby", "-e", "%s" % boot]
-	    else:
-		from engine.python import boot2
-            	command = ["python", "-c", "%s" % boot2]
+	if(1==2):
+	    boot = """\
+            require '/home/Kuba/femhub-online-lab/onlinelab/service/engine/ruby/runtime.rb'
+            engine = RubyEngine.new
+            engine.run
+            """
+            command = ["ruby", "-e", "%s" % boot]
+	else:
+            from engine.python import boot
+            command = ["python", "-c", "%s" % boot]
 
         env = self.build_env()
 
