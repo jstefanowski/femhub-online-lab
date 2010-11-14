@@ -28,7 +28,8 @@ class RubyXMLRPCServer
         servlet.add_handler("evaluate") { |source| methods.evaluate(source) }
 
         @server=WEBrick::HTTPServer.new(:Port => port, :Logger =>
-        WEBrick::Log.new(nil) )
+        WEBrick::Log.new(StringIO.new) )
+	
         @server.mount("/", servlet)
     end
   
