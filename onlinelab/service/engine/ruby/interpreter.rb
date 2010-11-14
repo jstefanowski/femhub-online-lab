@@ -1,4 +1,4 @@
-require "/home/Kuba/femhub-online-lab/onlinelab/service/engine/ruby/outputtrap.rb"
+require File.dirname(__FILE__) + "/outputtrap.rb"
 
 
 class RubyInterpreter

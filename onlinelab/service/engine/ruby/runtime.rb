@@ -1,5 +1,6 @@
-require "/home/Kuba/femhub-online-lab/onlinelab/service/engine/ruby/server.rb"
 require "socket"
+
+require File.dirname(__FILE__) + "/server.rb"
 
 
 class RubyEngine

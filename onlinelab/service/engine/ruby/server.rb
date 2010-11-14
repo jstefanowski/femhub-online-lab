@@ -1,7 +1,7 @@
 require 'webrick'
 require 'xmlrpc/server.rb'
 
-require "/home/Kuba/femhub-online-lab/onlinelab/service/engine/ruby/interpreter.rb"
+require File.dirname(__FILE__) + "/interpreter.rb"
 
 
 class RubyXMLRPCMethods
