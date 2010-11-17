@@ -7,6 +7,7 @@ class RubyInterpreter
         @debug = debug
         @trap = OutputTrap.new
         @index = 0
+	@file_name = "<online-lab>"
     end
 
     def complete(source)
@@ -21,7 +22,7 @@ class RubyInterpreter
             start = Time.now.usec
 
         begin
-            eval(source)
+            eval(source, nil, @file_name)
         rescue Exception => ex
             traceback = ex.message
         end
