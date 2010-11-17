@@ -22,7 +22,7 @@ class RubyInterpreter
             start = Time.now.usec
 
         begin
-            eval(source, nil, @file_name)
+            last_logical = eval(source, nil, @file_name)
         rescue Exception => ex
             traceback = ex.message
         end
@@ -34,7 +34,7 @@ class RubyInterpreter
         return { "source" => source,
             "index" => @index,
             "time" => stop - start,
-            "out" => @trap.out,
+            "out" => @trap.out + "\n" + last_logical.to_s,
             "err" => @trap.err,
             "plots" => [],
             "traceback" => traceback,
