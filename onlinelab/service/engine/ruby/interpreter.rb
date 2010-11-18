@@ -9,6 +9,8 @@ class RubyInterpreter
         @index = 0
 	@file_name = "<online-lab>"
 	@context = Class.new
+	@binding = eval("def empty_binding; binding; end; empty_binding",
+                      TOPLEVEL_BINDING)
     end
 
     def complete(source)
@@ -37,7 +39,7 @@ class RubyInterpreter
             start = Time.now.usec
 
         begin
-            last_logical = eval(source, nil, @file_name)
+            last_logical = eval(source, @binding, @file_name)
         rescue Exception => ex
             traceback = ex.message
         end
