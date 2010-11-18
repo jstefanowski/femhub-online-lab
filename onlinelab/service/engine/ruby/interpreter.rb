@@ -8,11 +8,26 @@ class RubyInterpreter
         @trap = OutputTrap.new
         @index = 0
 	@file_name = "<online-lab>"
+	@context = Class.new
     end
 
     def complete(source)
 
     end
+
+    def format(str)
+        lines = str.split("\n")
+        lines.each{|line| line[0,0] = "=> "}
+        gattered = ""
+
+        for line in lines
+            gattered << line + "\n"
+        end
+
+        gattered
+    end
+            
+	
 
     def evaluate(source)
         begin
@@ -29,12 +44,15 @@ class RubyInterpreter
 
         stop  = Time.now.usec
 
+	out = @trap.out
+	out << format(last_logical.to_s)
+
         @index += 1
 
         return { "source" => source,
             "index" => @index,
             "time" => stop - start,
-            "out" => @trap.out + "\n" + last_logical.to_s,
+            "out" => out,
             "err" => @trap.err,
             "plots" => [],
             "traceback" => traceback,
