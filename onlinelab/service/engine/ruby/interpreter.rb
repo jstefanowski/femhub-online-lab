@@ -8,7 +8,6 @@ class RubyInterpreter
         @trap = OutputTrap.new
         @index = 0
 	@file_name = "<online-lab>"
-	@context = Class.new
 	@binding = eval("def empty_binding; binding; end; empty_binding",
                       TOPLEVEL_BINDING)
     end
