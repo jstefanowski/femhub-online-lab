@@ -1,3 +1,7 @@
+require 'rubygems'
+gem 'rdoc'
+require 'rdoc/ri/driver'
+
 require File.dirname(__FILE__) + "/outputtrap.rb"
 
 
@@ -10,10 +14,23 @@ class RubyInterpreter
         @file_name = "<online-lab>"
         @binding = eval("def empty_binding; binding; end; empty_binding",
                       TOPLEVEL_BINDING)
+        @driver = RDoc::RI::Driver.new
     end
 
     def complete(source)
+        completions = []
+        matches = @driver.complete(source)
 
+        for match in matches
+           completions << { 'match' => match,
+                        'info' => {} 
+                        } 
+        end
+
+        return {
+            'completions' => completions,
+            'interrupted' => false,
+            }
     end
 
     def format(str)
