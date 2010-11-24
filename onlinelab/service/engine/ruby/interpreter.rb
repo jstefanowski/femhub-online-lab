@@ -14,28 +14,33 @@ class RubyInterpreter
         @file_name = "<online-lab>"
         @binding = eval("def empty_binding; binding; end; empty_binding",
                       TOPLEVEL_BINDING)
-        @driver = RDoc::RI::Driver.new
     end
 
     def complete(source)
         completions = []
-        matches = {}#@driver.complete(source)
+        matches = {}
         
         toComplete = source.split(".", -1)
         back = toComplete[-1]
-        toComplete = toComplete[0..-2]
-        toComplete = toComplete.join(".")
 
-        begin
-            matches = eval(toComplete + "." + "methods", @binding, @file_name)
+        if toComplete.length == 1
+            matches = eval("Class.constants", @binding, @file_name)
             matches = matches.grep(/^#{back}/) if back.length != 0
-        rescue Exception => ex
-            matches = []
+            toComplete = ""
+        else
+            toComplete = toComplete[0..-2]
+            toComplete = toComplete.join(".") + "."
+
+            begin
+                matches = eval(toComplete + "methods", @binding, @file_name)
+                matches = matches.grep(/^#{back}/) if back.length != 0
+            rescue Exception => ex
+                matches = []
+            end
         end
 
-
         for match in matches
-            completions << { 'match' => toComplete+"."+match,
+            completions << { 'match' => toComplete + match,
                         'info' => {} 
                         } 
         end
