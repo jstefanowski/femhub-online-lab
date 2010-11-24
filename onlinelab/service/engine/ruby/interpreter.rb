@@ -19,10 +19,23 @@ class RubyInterpreter
 
     def complete(source)
         completions = []
-        matches = @driver.complete(source)
+        matches = {}#@driver.complete(source)
+        
+        toComplete = source.split(".", -1)
+        back = toComplete[-1]
+        toComplete = toComplete[0..-2]
+        toComplete = toComplete.join(".")
+
+        begin
+            matches = eval(toComplete + "." + "methods", @binding, @file_name)
+            matches = matches.grep(/^#{back}/) if back.length != 0
+        rescue Exception => ex
+            matches = []
+        end
+
 
         for match in matches
-           completions << { 'match' => match,
+            completions << { 'match' => toComplete+"."+match,
                         'info' => {} 
                         } 
         end
