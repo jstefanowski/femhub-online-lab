@@ -39,7 +39,7 @@ class RubyInterpreter
             end
         end
 
-        for match in matches
+        for match in matches.sort
             completions << { 'match' => toComplete + match,
                         'info' => {} 
                         } 
