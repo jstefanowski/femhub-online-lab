@@ -105,7 +105,11 @@ class RubyInterpreter
     end
 
     def is_inspect(source)
-        return source[0,1] == "?"
+        if source.include?("\n")
+            return false
+        else
+            return source[0,1] == "?"
+        end
     end
 
     def inspect(source)
@@ -119,7 +123,7 @@ class RubyInterpreter
 
         toInspect = text.split(".", -1)
         
-	    begin
+        begin
             if toInspect.length > 1
                 front = toInspect[0]
                 back = toInspect[1..-1]
@@ -159,7 +163,11 @@ class RubyInterpreter
     end
 
     def is_class(text)
-        classList = eval("Class.constants", @binding, @file_name)
-        classList.include?(text)
+        if text.include?("::")
+            return true
+        else
+            classList = eval("Class.constants", @binding, @file_name)
+            return classList.include?(text)
+        end
     end
 end
