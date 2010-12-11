@@ -67,6 +67,10 @@ class RubyInterpreter
 	
 
     def evaluate(source)
+        if is_inspect(source)
+            return inspect(source)
+        end
+
         begin
             traceback = false
             @trap.set
@@ -76,11 +80,7 @@ class RubyInterpreter
         begin
             last_logical = eval(source, @binding, @file_name)
         rescue Exception => ex
-            if is_inspect(source)
-                return inspect(source)
-            else
-                traceback = ex.message
-            end
+            traceback = ex.message
         end
 
         stop  = Time.now.usec
