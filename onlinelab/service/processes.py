@@ -168,11 +168,10 @@ class ProcessManager(object):
             command = args.command
         except AttributeError:
             
-	    if(1==2):
+	    if(1==1):
 	        boot = """\
                 require '/home/Kuba/femhub-online-lab/onlinelab/service/engine/ruby/runtime.rb'
-                engine = RubyEngine.new
-                engine.run
+                RubyEngine.new.run
                 """
                 command = ["ruby", "-e", "%s" % boot]
 	    else:
