@@ -67,6 +67,9 @@ class RubyInterpreter
 	
 
     def evaluate(source)
+        trap("INT") { raise Interrupt, "interrupted" }
+        interrupted = false
+
         if is_inspect(source)
             return inspect(source)
         end
@@ -79,6 +82,8 @@ class RubyInterpreter
 
         begin
             last_logical = eval(source, @binding, @file_name)
+        rescue Interrupt => inte
+            interrupted = true
         rescue Exception => ex
             traceback = ex.message
         end
@@ -97,7 +102,7 @@ class RubyInterpreter
             "err" => @trap.err,
             "plots" => [],
             "traceback" => traceback,
-            "interrupted" => 0
+            "interrupted" => interrupted
             }
         ensure
             @trap.reset
