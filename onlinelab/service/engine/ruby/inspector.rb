@@ -42,12 +42,12 @@ class Inspector
             includes = []
 
             found = @stores.map do |store|
-              begin
-                klass = store.load_class name
-                klasses  << klass
-                [store, klass]
-              rescue Errno::ENOENT
-              end
+                begin
+                    klass = store.load_class name
+                    klasses  << klass
+                    [store, klass]
+                rescue Errno::ENOENT
+                end
             end.compact
 
             return if found.empty?
@@ -59,25 +59,25 @@ class Inspector
             add_class out, name, klasses
 
             found.each do |store, klass|
-              comment = klass.comment
-              class_methods    = store.class_methods[klass.full_name]
-              instance_methods = store.instance_methods[klass.full_name]
+                comment = klass.comment
+                class_methods    = store.class_methods[klass.full_name]
+                instance_methods = store.instance_methods[klass.full_name]
 
-              if comment.empty? and !(instance_methods or class_methods) then
-                also_in << store
-                next
-              end
+                if comment.empty? and !(instance_methods or class_methods) then
+                    also_in << store
+                    next
+                end
 
 
-              unless comment.empty? then
-                out << RDoc::Markup::Rule.new(1)
-                out << comment
-              end
-                out << RDoc::Markup::BlankLine.new
+                unless comment.empty? then
+                    out << RDoc::Markup::Rule.new(1)
+                    out << comment
+                end
+                    out << RDoc::Markup::BlankLine.new
+                end
+
+                display out
             end
-
-            display out
-          end
 
         def @driver.display_name_short name
             return true if display_class_short name
@@ -85,104 +85,101 @@ class Inspector
             display_method name if name =~ /::|#|\./
 
             true
-          rescue NotFoundError
+            rescue NotFoundError
             matches = list_methods_matching name if name =~ /::|#|\./
             matches = classes.keys.grep(/^#{name}/) if matches.empty?
 
             raise if matches.empty?
 
             page do |io|
-              io.puts "#{name} not found, maybe you meant:"
-              io.puts
-              io.puts matches.join("\n")
+                io.puts "#{name} not found, maybe you meant:"
+                io.puts
+                io.puts matches.join("\n")
             end
 
             false
-          end
+        end
 
 
-  def @driver.display_class name
-    return if name =~ /#|\./
+        def @driver.display_class name
+            return if name =~ /#|\./
 
-    klasses = []
-    includes = []
+            klasses = []
+            includes = []
 
-    found = @stores.map do |store|
-      begin
-        klass = store.load_class name
-        klasses  << klass
-        includes << [klass.includes, store] if klass.includes
-        [store, klass]
-      rescue Errno::ENOENT
-      end
-    end.compact
+            found = @stores.map do |store|
+              begin
+                klass = store.load_class name
+                klasses  << klass
+                includes << [klass.includes, store] if klass.includes
+                [store, klass]
+              rescue Errno::ENOENT
+              end
+            end.compact
 
-    return if found.empty?
+            return if found.empty?
 
-    also_in = []
+            also_in = []
 
-    includes.reject! do |modules,| modules.empty? end
+            includes.reject! do |modules,| modules.empty? end
 
-    out = RDoc::Markup::Document.new
+            out = RDoc::Markup::Document.new
 
-    add_class out, name, klasses
+            add_class out, name, klasses
 
-    add_includes out, includes
+            add_includes out, includes
 
-    found.each do |store, klass|
-      comment = klass.comment
-      class_methods    = store.class_methods[klass.full_name]
-      instance_methods = store.instance_methods[klass.full_name]
-      attributes       = store.attributes[klass.full_name]
+            found.each do |store, klass|
+                comment = klass.comment
+                class_methods    = store.class_methods[klass.full_name]
+                instance_methods = store.instance_methods[klass.full_name]
+                attributes       = store.attributes[klass.full_name]
 
-      if comment.empty? and !(instance_methods or class_methods) then
-        also_in << store
-        next
-      end
+              if comment.empty? and !(instance_methods or class_methods) then
+                  also_in << store
+                  next
+              end
 
-      add_from out, store
+              add_from out, store
 
-      unless comment.empty? then
-        out << RDoc::Markup::Rule.new(1)
-        out << comment
-      end
+              unless comment.empty? then
+                  out << RDoc::Markup::Rule.new(1)
+                  out << comment
+              end
 
-      if class_methods or instance_methods or not klass.constants.empty? then
-        out << RDoc::Markup::Rule.new(1)
-      end
+              if class_methods or instance_methods or not klass.constants.empty? then
+                  out << RDoc::Markup::Rule.new(1)
+              end
 
-      unless klass.constants.empty? then
-        out << RDoc::Markup::Heading.new(1, "Constants:")
-        out << RDoc::Markup::BlankLine.new
-        list = RDoc::Markup::List.new :NOTE
+              unless klass.constants.empty? then
+                  out << RDoc::Markup::Heading.new(1, "Constants:")
+                  out << RDoc::Markup::BlankLine.new
+                  list = RDoc::Markup::List.new :NOTE
 
-        constants = klass.constants.sort_by { |constant| constant.name }
+                  constants = klass.constants.sort_by { |constant| constant.name }
 
-        list.push(*constants.map do |constant|
-          parts = constant.comment.parts if constant.comment
-          parts << RDoc::Markup::Paragraph.new('[not documented]') if
-            parts.empty?
+                  list.push(*constants.map do |constant|
+                      parts = constant.comment.parts if constant.comment
+                      parts << RDoc::Markup::Paragraph.new('[not documented]') if
+                    parts.empty?
 
-          RDoc::Markup::ListItem.new(constant.name, *parts)
-        end)
+                  RDoc::Markup::ListItem.new(constant.name, *parts)
+                end)
 
-        out << list
-      end
+                out << list
+              end
 
-      add_method_list out, class_methods,    'Class methods'
-      add_method_list out, instance_methods, 'Instance methods'
-      add_method_list out, attributes,       'Attributes'
+              add_method_list out, class_methods,    'Class methods'
+              add_method_list out, instance_methods, 'Instance methods'
+              add_method_list out, attributes,       'Attributes'
 
-      out << RDoc::Markup::BlankLine.new
-    end
+              out << RDoc::Markup::BlankLine.new
+            end
 
-    add_also_in out, also_in
+            add_also_in out, also_in
 
-    display out
-  end
-
-
-
+            display out
+        end
     end
 
     def get_docstring(obj, more = true)

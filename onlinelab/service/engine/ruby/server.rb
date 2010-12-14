@@ -20,7 +20,6 @@ end
 
 
 class RubyXMLRPCServer
-    @server
     def initialize(port, interpreter)
         methods = RubyXMLRPCMethods.new(RubyInterpreter.new)
         servlet = XMLRPC::WEBrickServlet.new

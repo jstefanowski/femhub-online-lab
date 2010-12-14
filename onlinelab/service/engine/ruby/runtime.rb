@@ -4,7 +4,6 @@ require File.dirname(__FILE__) + "/server.rb"
 
 
 class RubyEngine
-    @interpreter
   
     def initialize(interpreter=nil)
         @interpreter = interpreter
